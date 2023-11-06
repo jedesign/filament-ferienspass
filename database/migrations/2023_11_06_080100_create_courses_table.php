@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->text('description');
             $table->enum('state', CourseState::values())->default(CourseState::DRAFT->value);
             $table->string('state_message')->nullable();
-            $table->dateTime('beginning');
+            $table->dateTime('start');
             $table->dateTime('end');
             $table->enum('day_span', DaySpan::values());
             $table->unsignedInteger('min_participants')->default(5);
