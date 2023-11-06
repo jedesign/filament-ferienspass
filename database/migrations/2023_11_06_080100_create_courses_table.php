@@ -27,7 +27,7 @@ return new class extends Migration {
             $table->unsignedInteger('max_participants');
             $table->enum('grade_group', GradeGroup::values())
                 ->default(GradeGroup::ALL->value)
-                ->comment('lower => 1. – 3. grade, intermediate => 4. – 6. grade, all => no limitation');
+                ->comment('lower => 1. – 3. grade, intermediate => 4. – 6. grade, all => all grades');
             $table->string('meeting_point');
             $table->string('clothes')->nullable();
             $table->string('bring_along')->nullable();
