@@ -2,7 +2,10 @@
 
 namespace App\Enums;
 
-enum CourseState: string
+use Filament\Support\Contracts\HasLabel;
+use Illuminate\Support\Str;
+
+enum CourseState: string implements HasLabel
 {
     case DRAFT = 'draft';
     case ACTIVE = 'active';
@@ -15,6 +18,11 @@ enum CourseState: string
             ->map(fn($state) => $state->value)
             ->values()
             ->all();
+    }
+
+    public function getLabel(): ?string
+    {
+        return __(Str::title($this->value));
     }
 
     public static function color($value) : string

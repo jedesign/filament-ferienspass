@@ -7,11 +7,13 @@ use App\Enums\DaySpan;
 use App\Enums\GradeGroup;
 use App\Filament\Resources\CourseResource\Pages;
 use App\Models\Course;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
@@ -32,55 +34,89 @@ class CourseResource extends Resource
             TextInput::make('title')
                 ->required()
                 ->lazy()
-                ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                ->afterStateUpdated(function (Set $set, Get $get, ?string $state, ?string $old) {
+                    $slug = $get('slug');
+
+                    if (!$get('slug') || Str::slug($old) === $slug) {
+                        $set('slug', Str::slug($state));
+                    }
+                }),
 
             TextInput::make('slug')
-                ->disabled()
                 ->required()
-                ->unique(Course::class, 'slug', fn($record) => $record),
+                ->lazy()
+                ->afterStateUpdated(function (Set $set, Get $get, ?string $state) {
+                    if ($state) {
+                        $set('slug', Str::slug($state));
+                        return;
+                    }
+
+                    $set('slug', Str::slug($get('title')));
+
+                })
+                ->unique(Course::class, 'slug', fn($record) => $record)
+                ->suffixAction(
+                    Action::make('regenerateSlug')
+                        ->icon('heroicon-m-arrow-path')
+                        ->requiresConfirmation()
+                        ->action(function (Set $set, Get $get) {
+                            $set('slug', Str::slug($get('title')));
+                        })
+                ),
 
             Textarea::make('description')
                 ->required(),
 
             Select::make('state')
                 ->enum(CourseState::class)
-                ->options(CourseState::values())
+                ->options(CourseState::class)
                 ->selectablePlaceholder(false)
-                ->required()
-                ->markAsRequired(false),
+                ->default(CourseState::DRAFT->value)
+                ->native(false)
+                ->required(),
 
             DateTimePicker::make('start')
                 ->native(false)
                 ->seconds(false)
-                ->suffixIcon('heroicon-m-calendar-days'),
+                ->displayFormat('d. F Y, H:i')
+                ->prefixIcon('heroicon-m-calendar-days')
+                ->closeOnDateSelection()
+                ->required(),
 
             DateTimePicker::make('end')
                 ->native(false)
                 ->seconds(false)
-                ->suffixIcon('heroicon-m-calendar-days'),
+                ->displayFormat('d. F Y, H:i')
+                ->prefixIcon('heroicon-m-calendar-days')
+                ->closeOnDateSelection()
+                ->required()
+                ->after('start'),
 
             Select::make('day_span')
                 ->enum(DaySpan::class)
-                ->options(DaySpan::values())
-                ->required()
-                ->markAsRequired(false),
+                ->options(DaySpan::class)
+                ->native(false)
+                ->required(),
 
             TextInput::make('min_participants')
                 ->required()
                 ->integer()
                 ->minValue(5)
-                ->suffixIcon('heroicon-m-user-group'),
+                ->default(5)
+                ->prefixIcon('heroicon-m-user-group'),
 
             TextInput::make('max_participants')
                 ->required()
                 ->integer()
-                ->suffixIcon('heroicon-m-user-group'),
+                ->gte('min_participants')
+                ->minValue(5)
+                ->prefixIcon('heroicon-m-user-group'),
 
             Select::make('grade_group')
                 ->enum(GradeGroup::class)
-                ->options(GradeGroup::values())
-                ->required()
-                ->markAsRequired(false),
+                ->options(GradeGroup::class)
+                ->native(false)
+                ->required(),
 
             Textarea::make('meeting_point')
                 ->required(),
@@ -91,7 +127,10 @@ class CourseResource extends Resource
 
             TextInput::make('price')
                 ->required()
-                ->numeric(),
+                ->numeric()
+                ->inputMode('decimal')
+                ->step(0.05)
+                ->prefix('CHF'),
         ]);
     }
 
