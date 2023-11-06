@@ -2,10 +2,11 @@
 
 namespace App\Enums;
 
+use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 use Illuminate\Support\Str;
 
-enum CourseState: string implements HasLabel
+enum CourseState: string implements HasLabel, HasColor
 {
     case DRAFT = 'draft';
     case ACTIVE = 'active';
@@ -25,9 +26,9 @@ enum CourseState: string implements HasLabel
         return __(Str::title($this->value));
     }
 
-    public static function color($value) : string
+    public function getColor(): array|string|null
     {
-        return match ($value) {
+        return match ($this) {
             self::ACTIVE => 'success',
             self::TENTATIVE => 'warning',
             self::CANCELED => 'danger',

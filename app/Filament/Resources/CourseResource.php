@@ -140,8 +140,7 @@ class CourseResource extends Resource
             TextColumn::make('title')
                 ->searchable()
                 ->sortable()
-                ->description(fn(Course $record) => $record->slug, position: 'above')
-                ->description(fn(Course $record) => $record->description),
+                ->description(fn(Course $record) => $record->slug),
 
             TextColumn::make('description')
                 ->limit(10)
@@ -158,8 +157,7 @@ class CourseResource extends Resource
 
             TextColumn::make('state')
                 ->sortable()
-                ->badge()
-                ->color(fn(string $state): string => CourseState::color($state)),
+                ->badge(),
 
             TextColumn::make('state_message'),
 
