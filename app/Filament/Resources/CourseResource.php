@@ -64,43 +64,36 @@ class CourseResource extends Resource
             Select::make('day_span')
                 ->enum(DaySpan::class)
                 ->options(DaySpan::values())
-                ->selectablePlaceholder(false)
                 ->required()
                 ->markAsRequired(false),
 
             TextInput::make('min_participants')
                 ->required()
-                ->integer(),
+                ->integer()
+                ->minValue(5)
+                ->suffixIcon('heroicon-m-user-group'),
 
             TextInput::make('max_participants')
                 ->required()
-                ->integer(),
+                ->integer()
+                ->suffixIcon('heroicon-m-user-group'),
 
             Select::make('grade_group')
                 ->enum(GradeGroup::class)
                 ->options(GradeGroup::values())
-                ->selectablePlaceholder(false)
                 ->required()
                 ->markAsRequired(false),
 
-            TextInput::make('meeting_point')
+            Textarea::make('meeting_point')
                 ->required(),
 
-            TextInput::make('clothes'),
+            Textarea::make('clothes'),
 
-            TextInput::make('bring_along'),
+            Textarea::make('bring_along'),
 
             TextInput::make('price')
                 ->required()
                 ->numeric(),
-
-            Placeholder::make('created_at')
-                ->label('Created Date')
-                ->content(fn(?Course $record): string => $record?->created_at?->diffForHumans() ?? '-'),
-
-            Placeholder::make('updated_at')
-                ->label('Last Modified Date')
-                ->content(fn(?Course $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
         ]);
     }
 
