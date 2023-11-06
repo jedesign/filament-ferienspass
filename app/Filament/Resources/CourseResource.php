@@ -100,14 +100,22 @@ class CourseResource extends Resource
         return $table->columns([
             TextColumn::make('title')
                 ->searchable()
-                ->sortable(),
-
-            TextColumn::make('slug')
-                ->searchable()
-                ->sortable(),
+                ->sortable()
+                ->description(fn(Course $record) => $record->slug, position: 'above')
+                ->description(fn(Course $record) => $record->description),
 
             TextColumn::make('description')
-                ->limit(50),
+                ->limit(10)
+                ->tooltip(function (TextColumn $column): ?string {
+                    $state = $column->getState();
+
+                    if (strlen($state) <= $column->getCharacterLimit()) {
+                        return null;
+                    }
+
+                    // Only render the tooltip if the column content exceeds the length limit.
+                    return $state;
+                }),
 
             TextColumn::make('state')
                 ->sortable()
@@ -117,11 +125,11 @@ class CourseResource extends Resource
             TextColumn::make('state_message'),
 
             TextColumn::make('beginning')
-                ->date()
+                ->dateTime()
                 ->sortable(),
 
             TextColumn::make('end')
-                ->date()
+                ->dateTime()
                 ->sortable(),
 
             TextColumn::make('day_span')
