@@ -7,6 +7,7 @@ use App\Enums\DaySpan;
 use App\Enums\GradeGroup;
 use App\Filament\Resources\CourseResource\Pages;
 use App\Models\Course;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -49,11 +50,19 @@ class CourseResource extends Resource
                         $set('slug', Str::slug($state));
                         return;
                     }
-                    
+
                     $set('slug', Str::slug($get('title')));
 
                 })
-                ->unique(Course::class, 'slug', fn($record) => $record),
+                ->unique(Course::class, 'slug', fn($record) => $record)
+                ->suffixAction(
+                    Action::make('regenerateSlug')
+                        ->icon('heroicon-m-arrow-path')
+                        ->requiresConfirmation()
+                        ->action(function (Set $set, Get $get) {
+                            $set('slug', Str::slug($get('title')));
+                        })
+                ),
 
             Textarea::make('description')
                 ->required(),
