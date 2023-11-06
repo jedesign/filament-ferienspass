@@ -9,11 +9,21 @@ enum CourseState: string
     case TENTATIVE = 'tentative';
     case CANCELED = 'canceled';
 
-    public static function values()
+    public static function values() : array
     {
         return collect(self::cases())
             ->map(fn($state) => $state->value)
             ->values()
             ->all();
+    }
+
+    public static function color($value) : string
+    {
+        return match ($value) {
+            self::ACTIVE => 'success',
+            self::TENTATIVE => 'warning',
+            self::CANCELED => 'danger',
+            default => 'gray',
+        };
     }
 }

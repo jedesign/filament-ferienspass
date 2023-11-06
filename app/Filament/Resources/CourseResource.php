@@ -110,7 +110,9 @@ class CourseResource extends Resource
                 ->limit(50),
 
             TextColumn::make('state')
-                ->sortable(),
+                ->sortable()
+                ->badge()
+                ->color(fn(string $state): string => CourseState::color($state)),
 
             TextColumn::make('state_message'),
 
