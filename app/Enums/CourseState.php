@@ -12,7 +12,7 @@ enum CourseState: string implements HasLabel
     case TENTATIVE = 'tentative';
     case CANCELED = 'canceled';
 
-    public static function values()
+    public static function values() : array
     {
         return collect(self::cases())
             ->map(fn($state) => $state->value)
@@ -23,5 +23,15 @@ enum CourseState: string implements HasLabel
     public function getLabel(): ?string
     {
         return __(Str::title($this->value));
+    }
+
+    public static function color($value) : string
+    {
+        return match ($value) {
+            self::ACTIVE => 'success',
+            self::TENTATIVE => 'warning',
+            self::CANCELED => 'danger',
+            default => 'gray',
+        };
     }
 }

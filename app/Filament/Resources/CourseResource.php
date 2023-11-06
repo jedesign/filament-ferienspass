@@ -136,25 +136,35 @@ class CourseResource extends Resource
                 ->searchable()
                 ->sortable(),
 
-            TextColumn::make('description'),
+            TextColumn::make('description')
+                ->limit(50),
 
-            TextColumn::make('state'),
+            TextColumn::make('state')
+                ->sortable()
+                ->badge()
+                ->color(fn(string $state): string => CourseState::color($state)),
 
             TextColumn::make('state_message'),
 
             TextColumn::make('beginning')
-                ->date(),
+                ->date()
+                ->sortable(),
 
             TextColumn::make('end')
-                ->date(),
+                ->date()
+                ->sortable(),
 
-            TextColumn::make('day_span'),
+            TextColumn::make('day_span')
+                ->sortable(),
 
-            TextColumn::make('min_participants'),
+            TextColumn::make('min_participants')
+                ->sortable(),
 
-            TextColumn::make('max_participants'),
+            TextColumn::make('max_participants')
+                ->sortable(),
 
-            TextColumn::make('grade_group'),
+            TextColumn::make('grade_group')
+                ->sortable(),
 
             TextColumn::make('meeting_point'),
 
@@ -162,7 +172,9 @@ class CourseResource extends Resource
 
             TextColumn::make('bring_along'),
 
-            TextColumn::make('price'),
+            TextColumn::make('price')
+                ->sortable()
+                ->money('CHF'),
         ]);
     }
 
