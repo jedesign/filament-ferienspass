@@ -3,6 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Enums\CourseState;
+use App\Enums\DaySpan;
+use App\Enums\GradeGroup;
 use App\Filament\Resources\CourseResource\Pages;
 use App\Models\Course;
 use Filament\Forms\Components\DatePicker;
@@ -51,14 +53,20 @@ class CourseResource extends Resource
 
             DateTimePicker::make('start')
                 ->native(false)
-                ->seconds(false),
+                ->seconds(false)
+                ->suffixIcon('heroicon-m-calendar-days'),
 
             DateTimePicker::make('end')
                 ->native(false)
-                ->seconds(false),
+                ->seconds(false)
+                ->suffixIcon('heroicon-m-calendar-days'),
 
-            TextInput::make('day_span')
-                ->required(),
+            Select::make('day_span')
+                ->enum(DaySpan::class)
+                ->options(DaySpan::values())
+                ->selectablePlaceholder(false)
+                ->required()
+                ->markAsRequired(false),
 
             TextInput::make('min_participants')
                 ->required()
@@ -68,8 +76,12 @@ class CourseResource extends Resource
                 ->required()
                 ->integer(),
 
-            TextInput::make('grade_group')
-                ->required(),
+            Select::make('grade_group')
+                ->enum(GradeGroup::class)
+                ->options(GradeGroup::values())
+                ->selectablePlaceholder(false)
+                ->required()
+                ->markAsRequired(false),
 
             TextInput::make('meeting_point')
                 ->required(),
