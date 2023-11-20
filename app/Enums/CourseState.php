@@ -3,10 +3,11 @@
 namespace App\Enums;
 
 use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 use Illuminate\Support\Str;
 
-enum CourseState: string implements HasLabel, HasColor
+enum CourseState: string implements HasLabel, HasColor, HasIcon
 {
     case DRAFT = 'draft';
     case ACTIVE = 'active';
@@ -33,6 +34,16 @@ enum CourseState: string implements HasLabel, HasColor
             self::TENTATIVE => 'warning',
             self::CANCELED => 'danger',
             default => 'gray',
+        };
+    }
+
+    public function getIcon(): ?string
+    {
+        return match ($this) {
+            self::DRAFT => 'heroicon-m-pencil',
+            self::TENTATIVE => 'heroicon-m-eye',
+            self::ACTIVE => 'heroicon-m-check',
+            self::CANCELED => 'heroicon-m-x-mark',
         };
     }
 }
