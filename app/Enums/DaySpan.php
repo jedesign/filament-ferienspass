@@ -2,7 +2,10 @@
 
 namespace App\Enums;
 
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
+use Illuminate\Support\Str;
 
 enum DaySpan: string implements HasLabel
 {
@@ -10,7 +13,7 @@ enum DaySpan: string implements HasLabel
     case MORNING = 'morning';
     case AFTERNOON = 'afternoon';
 
-    public static function values()
+    public static function values(): array
     {
         return collect(self::cases())
             ->map(fn($state) => $state->value)
@@ -20,10 +23,10 @@ enum DaySpan: string implements HasLabel
 
     public function getLabel(): ?string
     {
-        return match ($this->value) {
-            "full" => __("Full Day"),
-            "morning" => __("Morning"),
-            "afternoon" => __("Afternoon"),
+        return match ($this) {
+            self::FULL=> __("Full Day"),
+            self::MORNING=> __("Morning"),
+            self::AFTERNOON=> __("Afternoon"),
         };
     }
 }

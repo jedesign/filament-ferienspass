@@ -151,7 +151,8 @@ class CourseResource extends Resource
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('day_span')
-                    ->sortable(),
+                    ->sortable()
+                    ->badge(),
                 Tables\Columns\TextColumn::make('min_participants')
                     ->numeric()
                     ->sortable(),
